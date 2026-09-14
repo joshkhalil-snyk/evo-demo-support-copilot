@@ -1,0 +1,10 @@
+[project]
+name = "support-copilot"
+version = "0.4.2"
+description = "Customer support triage and drafting assistant"
+requires-python = ">=3.11"
+
+[tool.support-copilot]
+default_model = "gpt-4o-2024-08-06"
+fallback_model = "claude-sonnet-4-5"
+embedding_model = "text-embedding-3-large"

@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "internal-toolbox": {
+      "command": "node",
+      "args": ["../evo-demo-mcp-toolbox/dist/server.js"]
+    },
+    "ticket-store": {
+      "command": "python",
+      "args": ["-m", "mcp_server.tickets"]
+    }
+  }
+}

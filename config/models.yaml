@@ -1,0 +1,31 @@
+# Model routing configuration.
+# Owned by the support platform team. Changes require review from AI governance.
+
+routes:
+  triage:
+    provider: openai
+    model: gpt-4o-2024-08-06
+  drafting:
+    provider: openai
+    model: gpt-4o-2024-05-13
+  classification:
+    provider: openai
+    model: gpt-4o-mini
+  summarisation:
+    provider: openai
+    model: gpt-4-turbo
+  escalation:
+    provider: anthropic
+    model: claude-sonnet-4-5
+  sentiment:
+    provider: anthropic
+    model: claude-3-5-haiku-20241022
+
+embeddings:
+  provider: openai
+  model: text-embedding-3-large
+  dimensions: 3072
+
+vector_store:
+  engine: chroma
+  collection: support-kb
