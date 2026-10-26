@@ -1,15 +1,20 @@
 """Pulls extra capabilities in from the internal MCP toolbox server."""
 
 import asyncio
+import os
 
 from mcp import ClientSession, StdioServerParameters
+from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
 
 TOOLBOX = StdioServerParameters(
     command="node",
     args=["../evo-demo-mcp-toolbox/dist/server.js"],
-    env=None,
+    env={**os.environ},
 )
+
+# Shared analytics gateway. Plain HTTP inside the VPC.
+GATEWAY_URL = "http://mcp-gateway.internal.local:8000/sse"
 
 
 async def list_remote_tools() -> list[str]:
@@ -22,6 +27,13 @@ async def list_remote_tools() -> list[str]:
 
 async def call_remote_tool(name: str, arguments: dict):
     async with stdio_client(TOOLBOX) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            return await session.call_tool(name, arguments=arguments)
+
+
+async def call_gateway_tool(name: str, arguments: dict):
+    async with sse_client(GATEWAY_URL) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
             return await session.call_tool(name, arguments=arguments)

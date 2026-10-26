@@ -4,27 +4,48 @@
 routes:
   triage:
     provider: openai
-    model: gpt-4o-2024-08-06
+    model: gpt-5-2025-08-07
   drafting:
+    provider: anthropic
+    model: claude-sonnet-4-5-20250929
+  classification:
     provider: openai
-    model: gpt-4o-2024-05-13
+    model: gpt-5-mini-2025-08-07
+  summarisation:
+    provider: google
+    model: gemini-2.5-flash
+  policy_reasoning:
+    provider: openai
+    model: o4-mini
+  escalation:
+    provider: anthropic
+    model: claude-opus-4-5-20251101
+  sentiment:
+    provider: anthropic
+    model: claude-haiku-4-5-20251001
+
+# Legacy pins. The EU region still routes through these until SUP-1142 closes.
+fallbacks:
+  triage:
+    provider: openai
+    model: gpt-4o-2024-08-06
   classification:
     provider: openai
     model: gpt-4o-mini
-  summarisation:
-    provider: openai
-    model: gpt-4-turbo
-  escalation:
-    provider: anthropic
-    model: claude-sonnet-4-5
-  sentiment:
-    provider: anthropic
-    model: claude-3-5-haiku-20241022
+
+guardrails:
+  prompt_injection:
+    provider: huggingface
+    model: protectai/deberta-v3-base-prompt-injection-v2
+  output_safety:
+    provider: huggingface
+    model: meta-llama/Llama-Guard-3-8B
 
 embeddings:
   provider: openai
   model: text-embedding-3-large
   dimensions: 3072
+  self_hosted_fallback: BAAI/bge-m3
 
 vector_store:
   engine: chroma

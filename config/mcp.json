@@ -7,6 +7,27 @@
     "ticket-store": {
       "command": "python",
       "args": ["-m", "mcp_server.tickets"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}" }
+    },
+    "support-db": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://support_admin:Sup3rS3cret2024@support-db.internal.local:5432/tickets"
+      ]
+    },
+    "sentry": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@0.1.5", "https://mcp.sentry.dev/mcp"]
+    },
+    "gitlab": {
+      "type": "http",
+      "url": "https://gitlab.com/api/v4/mcp"
     }
   }
 }
