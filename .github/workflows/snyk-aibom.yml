@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   pull_request:
+permissions:
+  contents: read
 jobs:
   aibom:
     runs-on: ubuntu-latest
@@ -10,11 +12,22 @@ jobs:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       SNYK_ORG_ID: ${{ vars.SNYK_ORG_ID }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: snyk/actions/setup@master
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: snyk/actions/setup@9adf32b1121593767fc3c057af55b55db032dc04 # v1.0.0
+      - name: Check config
+        run: |
+          if [ -z "$SNYK_TOKEN" ]; then echo "::error::SNYK_TOKEN secret is not set (or this is a fork PR)"; exit 1; fi
+          if [ -z "$SNYK_ORG_ID" ]; then echo "::error::SNYK_ORG_ID variable is not set"; exit 1; fi
       - name: AI-BOM policy test
-        continue-on-error: true
-        run: snyk aibom test --org="$SNYK_ORG_ID" --severity-threshold=high
+        run: |
+          set +e
+          snyk aibom test --org="$SNYK_ORG_ID" --severity-threshold=high
+          code=$?
+          if [ "$code" -eq 1 ]; then
+            echo "::warning::AI-BOM policy issues found at High or above. See the step log."
+            exit 0
+          fi
+          exit "$code"
       - name: Upload AI-BOM to Evo
         if: ${{ !cancelled() && github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         run: snyk aibom --upload --repo "${{ github.server_url }}/${{ github.repository }}" --org="$SNYK_ORG_ID"
